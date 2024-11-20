@@ -50,8 +50,6 @@ public class CharController_Motor : MonoBehaviour {
 		}
 	}
 
-
-
 	void Update(){
 		moveFB = Input.GetAxis ("Horizontal") * speed;
 		moveLR = Input.GetAxis ("Vertical") * speed;
