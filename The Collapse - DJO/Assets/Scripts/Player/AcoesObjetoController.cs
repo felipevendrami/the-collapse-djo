@@ -36,12 +36,15 @@ public class AcoesObjetoController : MonoBehaviour
 
     private void Pegar()
     {
+        // Aqui pode ser implementada a acao quando pegar o objeto
+        Debug.Log("Pegou o objeto");
         Destroy(idObjetos.GetObjPegar());
         idObjetos.EsconderTexto();
     }
 
     private void Arrastar()
     {
+        // NAO SERA USADO
         GameObject obj = idObjetos.GetObjArrastar();
         obj.AddComponent<DragDrop>();
         obj.GetComponent<DragDrop>().Ativar();

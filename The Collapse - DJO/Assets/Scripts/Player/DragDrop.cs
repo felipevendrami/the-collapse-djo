@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class DragDrop : MonoBehaviour
 {
+    
+    /*
+        FUNCIONALIDADE NAO SERA UTILIZADA
+    */
+
     public Camera cam;
     Vector3 mousePosition;
 
