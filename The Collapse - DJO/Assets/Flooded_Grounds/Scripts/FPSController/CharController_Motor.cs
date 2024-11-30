@@ -7,13 +7,12 @@ public class CharController_Motor : MonoBehaviour {
 	public float speed = 10.0f;
 	public float sensitivity = 70.0f;
 	public float WaterHeight = 15.5f;
-	CharacterController character;
+	public CharacterController character;
 	public GameObject cam;
 	float moveFB, moveLR;
 	float rotX, rotY;
 	public bool webGLRightClickRotation = true;
-	//public float gravity = -9.8f;
-	public float gravity = -40f;
+	public float gravity = 40.0f;
 
     // Movimento Pulo
 	public float alturaPulo = 10f;
