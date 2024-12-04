@@ -32,6 +32,7 @@ public class IdentificarObjetoController : MonoBehaviour
 
             if (Physics.SphereCast(transform.position, 0.1f, transform.TransformDirection(Vector3.forward), out hit, 5, ignorarLayer))
             {
+                //Debug.Log("Objeto detectado: " + hit.transform.name + " " +hit.transform.gameObject.tag);
                 distanciaAlvo = hit.distance;
 
                 // Remover destaque do objeto anterior se não for mais o alvo
@@ -54,7 +55,7 @@ public class IdentificarObjetoController : MonoBehaviour
                 }
 
                 // Verificar se o objeto é "Pegar"
-                if (hit.transform.gameObject.tag == "Pegar")
+                if (hit.transform.gameObject.tag == "Pegar" || hit.transform.gameObject.tag == "CaixaVidaJogador" || hit.transform.gameObject.tag == "CaixaVidaFamilia")
                 {
                     objPegar = hit.transform.gameObject;
                     objAlvo = objPegar;

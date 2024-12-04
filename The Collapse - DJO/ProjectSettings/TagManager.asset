@@ -7,6 +7,8 @@ TagManager:
   - Pegar
   - Arrastar
   - Walkie
+  - CaixaVidaJogador
+  - CaixaVidaFamilia
   layers:
   - Default
   - TransparentFX

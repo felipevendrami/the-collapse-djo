@@ -137,4 +137,12 @@ public class GameManager : MonoBehaviour
         audio.time = 0;
         audio.Play(); 
     }
+
+    public void RecarregarVidaJogador(){
+        sliderVidaJogador.value += 20;
+    }
+
+    public void RecarregarVidaFamilia(){
+        sliderVidaFamilia.value += 15;
+    }
 }
