@@ -13,7 +13,7 @@ public class IdentificarObjetoController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        EsconderTexto(); 
     }
 
     // Update is called once per frame
@@ -24,9 +24,9 @@ public class IdentificarObjetoController : MonoBehaviour
             objArrastar = null;
             objPegar = null;
 
-            int ignorarLayer = 7; // Ignoreplayercast
-            ignorarLayer = 1 << ignorarLayer;
-            ignorarLayer = ~ignorarLayer; // Somente o layer 7 sera ignorado
+            int ignorarLayer = LayerMask.GetMask("Minimap", "IgnorePlayercast"); 
+
+            ignorarLayer = ~ignorarLayer;
 
             RaycastHit hit;
 
@@ -34,12 +34,14 @@ public class IdentificarObjetoController : MonoBehaviour
             {
                 distanciaAlvo = hit.distance;
 
+                // Remover destaque do objeto anterior se não for mais o alvo
                 if (objAlvo != null && hit.transform.gameObject != objAlvo)
                 {
                     objAlvo.GetComponent<Outline>().OutlineWidth = 0f;
                     objAlvo = null;
                 }
 
+                // Verificar se o objeto é "Arrastar"
                 if (hit.transform.gameObject.tag == "Arrastar")
                 {
                     objArrastar = hit.transform.gameObject;
@@ -51,29 +53,40 @@ public class IdentificarObjetoController : MonoBehaviour
                     textoMsg.text = "Arrastar/Soltar";
                 }
 
+                // Verificar se o objeto é "Pegar"
                 if (hit.transform.gameObject.tag == "Pegar")
                 {
                     objPegar = hit.transform.gameObject;
                     objAlvo = objPegar;
 
-                    textoTecla.color = new Color(51/255f, 1, 0);
+                    textoTecla.color = new Color(51 / 255f, 1, 0);
                     textoMsg.color = textoTecla.color;
                     textoTecla.text = "[F]";
-                    textoMsg.text = "Arrastar/Soltar";
+                    textoMsg.text = "Pegar";
                 }
-                
+
+                // Adicionar destaque ao objeto alvo
                 if (objAlvo != null)
                 {
                     objAlvo.GetComponent<Outline>().OutlineWidth = 5f;
                 }
-            } else
+            }
+            else
             {
+                // Esconder os textos e remover destaque se nenhum objeto for identificado
                 if (objAlvo != null)
                 {
                     objAlvo.GetComponent<Outline>().OutlineWidth = 0f;
                     objAlvo = null;
-                    EsconderTexto();
                 }
+
+                EsconderTexto();
+            }
+
+            // Caso nenhum objeto de interesse seja identificado, garantir que os textos fiquem vazios
+            if (objArrastar == null && objPegar == null)
+            {
+                EsconderTexto();
             }
         }
     }

@@ -37,6 +37,8 @@ public class AcoesObjetoController : MonoBehaviour
     private void Pegar()
     {
         // Aqui pode ser implementada a acao quando pegar o objeto
+        IPegavel obj = idObjetos.GetObjPegar().GetComponent<IPegavel>();
+        obj.Pegar();
         Debug.Log("Pegou o objeto");
         Destroy(idObjetos.GetObjPegar());
         idObjetos.EsconderTexto();
