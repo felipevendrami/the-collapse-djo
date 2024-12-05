@@ -23,7 +23,6 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -56,11 +55,12 @@ public class GameManager : MonoBehaviour
     {
         if(pilhas == 0) //se é a primeira vez pegando pilha, vamos mudar a fase.
         {
+            pilhas++;
             ProximaFase();
         }else{
+            pilhas++;
             TocarSom(0);
         }
-        pilhas++;
         AtualizarTextoPilhas();
     }
 
@@ -122,6 +122,7 @@ public class GameManager : MonoBehaviour
             textoFase.text = "Parabéns! Você completou todas as fases.";
         }
         
+        PlayerDataManager.Instance.SaveGame();
         TocarSom(1);//sucesso
     }
 
@@ -145,4 +146,33 @@ public class GameManager : MonoBehaviour
     public void RecarregarVidaFamilia(){
         sliderVidaFamilia.value += 15;
     }
+    public float GetVidaJogador(){
+        return sliderVidaJogador.value;
+    }
+
+    public float GetVidaFamilia(){
+        return sliderVidaFamilia.value;
+    }
+
+    public void SetVidaJogador(float novaVida)
+    {
+        sliderVidaJogador.value = Mathf.Clamp(novaVida, 0, sliderVidaJogador.maxValue);
+    }
+
+    public void SetVidaFamilia(float novaVida)
+    {
+        sliderVidaFamilia.value = Mathf.Clamp(novaVida, 0, sliderVidaFamilia.maxValue);
+    }
+
+    public int GetFaseAtual(){
+        return faseAtual;
+    }    
+
+    public void SetFaseAtual(int fase){
+        faseAtual = fase;
+    }
+    public void SetPilhas(int newPilhas){
+        pilhas = newPilhas;
+    }
+
 }

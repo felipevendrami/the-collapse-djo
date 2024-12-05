@@ -92,7 +92,9 @@ public class CharController_Motor : MonoBehaviour {
         }
 
 		movement = transform.rotation * movement;
-		character.Move (movement * Time.deltaTime);
+		if (character.enabled){
+			character.Move(movement * Time.deltaTime);
+		}
 	}
 
 	void CameraRotation(GameObject cam, float rotX, float rotY){		
