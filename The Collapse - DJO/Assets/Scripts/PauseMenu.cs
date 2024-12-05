@@ -9,7 +9,6 @@ public class PauseMenu : MonoBehaviour
 
     void Start()
     {
-        DontDestroyOnLoad(pauseMenu);
         Time.timeScale = 1f; // Jogo inicia sem pausa
         isPaused = false; 
         pauseMenu.SetActive(false); 

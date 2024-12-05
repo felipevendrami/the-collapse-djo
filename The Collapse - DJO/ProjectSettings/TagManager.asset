@@ -9,6 +9,7 @@ TagManager:
   - Walkie
   - CaixaVidaJogador
   - CaixaVidaFamilia
+  - PauseMenu
   layers:
   - Default
   - TransparentFX
