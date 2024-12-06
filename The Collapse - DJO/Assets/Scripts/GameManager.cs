@@ -97,12 +97,12 @@ public class GameManager : MonoBehaviour
         switch (faseAtual)
         {
             case 1:
-                textoFase.text = "Desafio 1: Encontrar pilhas para utilizar o rádio";
+                textoFase.text = "Desafio 1: Encontrar pilhas para utilizar o rádio.";
                 reducaoVidaJogador = 0.5f;
                 reducaoVidaFamilia = 0.3f;
                 break;
             case 2:
-                textoFase.text = "Desafio 2: Mesmo com pilhas, o rádio ainda não está funcionando. Passe pelos capangas para chegar até a antena de comunicação";
+                textoFase.text = "Desafio 2: Mesmo com pilhas, o rádio ainda não está funcionando. Passe pelos capangas para chegar até a antena de comunicação.";
                 reducaoVidaJogador = 0.7f;
                 reducaoVidaFamilia = 0.4f;
                 break;
@@ -120,6 +120,7 @@ public class GameManager : MonoBehaviour
     public void ProximaFase()
     {
         faseAtual++;
+        
         if (faseAtual <= 3)
         {
             AtualizarTextoFase();
@@ -127,14 +128,34 @@ public class GameManager : MonoBehaviour
         else
         {
             textoFase.text = "Parabéns! Você completou todos os desafios da Fase 1.";
-        }
+
+            // Salvando o score ao concluir a fase 3
+            if (faseAtual == 4) // Fase 3 finalizada
+            {
+                float healthPlayer = sliderVidaJogador.value;
+                float healthFamily = sliderVidaFamilia.value;
+
+                // Busca a instância do ScoreDataManager e salva o score
+                ScoreDataManager scoreManager = FindObjectOfType<ScoreDataManager>();
+                if (scoreManager != null)
+                {
+                    scoreManager.SaveScore(healthPlayer, healthFamily);
+                }
+                else
+                {
+                    Debug.LogError("ScoreDataManager não encontrado na cena!");
+                }
+            }
+        }    
         
         PlayerDataManager.Instance.SaveGame();
 
         textoJogoSalvo.gameObject.SetActive(true);
-        TocarSom(1);//sucesso
-		StartCoroutine(SaidaJogoSalvo());
+        TocarSom(1); // Som de sucesso
+        StartCoroutine(SaidaJogoSalvo());
     }
+
+
 
     private void GameOver()
     {
@@ -204,13 +225,13 @@ public class GameManager : MonoBehaviour
     }
 
     public void TriggerDesafio3(){
-        faseAtual = 3;
+        //faseAtual = 3;
         ProximaFase();
     }
 
     public void Desafio3Finalizado()
     {
-        faseAtual = 4;
+        //faseAtual = 4;
         ProximaFase();
     }
 }
