@@ -82,7 +82,6 @@ public class CapangaController : MonoBehaviour
                 if (hit.collider.CompareTag("Player"))
                 {
                     timerNav = timeOfNavegation;
-                    audioSrc.PlayOneShot(voiceHeySound);
                     return true;
                 }
             }
