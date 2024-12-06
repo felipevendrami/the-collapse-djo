@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CharController_Motor : MonoBehaviour {
 
@@ -15,7 +16,7 @@ public class CharController_Motor : MonoBehaviour {
 	public float gravity = 40.0f;
 
     // Movimento Pulo
-	public float alturaPulo = 10f;
+	public float alturaPulo = 100f;
 	public Transform checaChao;
     public float raioEsfera = 0.4f;
     public LayerMask chaoMask;
@@ -29,9 +30,13 @@ public class CharController_Motor : MonoBehaviour {
     private bool levantarBloqueado;
     public float alturaLevantado, alturaAbaixado, posicaoCameraEmPe, posicaoCameraAbaixado;
 
+	public int vida = 100;
+	public GameObject sangueNaTela;
+
 
 	void Start(){
 		//LockCursor ();
+		sangueNaTela.SetActive(false);
 		character = GetComponent<CharacterController> ();
 		cameraTransform = cam.transform;
 		if (Application.isEditor) {
@@ -75,6 +80,7 @@ public class CharController_Motor : MonoBehaviour {
 
         if (!levantarBloqueado && estaNoChao && Input.GetButtonDown("Jump"))
         {
+			Debug.Log("Pulou");
             velocidadeCai.y = Mathf.Sqrt(alturaPulo * -2f * gravity);
         }
         
@@ -90,6 +96,14 @@ public class CharController_Motor : MonoBehaviour {
         {
             AgacharLevantar();
         }
+
+		// Morte do player
+		if(vida <= 0)
+		{
+			Debug.Log("Player morreu");
+			speed = 0f;
+			//SceneManager.LoadScene("GameOver");
+		}
 
 		movement = transform.rotation * movement;
 		if (character.enabled){
@@ -133,4 +147,29 @@ public class CharController_Motor : MonoBehaviour {
         RaycastHit hit;
         levantarBloqueado = Physics.Raycast(cameraTransform.position, Vector3.up, out hit, 1.1f);
     }
+
+	// Dano causado pelo capanga
+	void OnTriggerEnter(Collider collider)
+	{
+		/*if(collider.gameObject.tag=="maoCapanga")
+		{
+			vida -= 30;
+			sangueNaTela.SetActive(true);
+			StartCoroutine("SaidaTelaSangue");
+			Debug.Log("Personagem levou dano. Vida = " + vida);
+		}*/
+	}
+
+	IEnumerator SaidaTelaSangue()
+	{
+		yield return new WaitForSeconds(4f);
+		sangueNaTela.SetActive(false);
+	}
+
+
+	/*public void LevarDano(int dano)
+	{
+		vida -= dano;
+		Debug.Log("Personagem levou dano. Vida = " + vida);
+	}*/
 }

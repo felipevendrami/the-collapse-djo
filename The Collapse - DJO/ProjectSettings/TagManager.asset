@@ -10,6 +10,9 @@ TagManager:
   - CaixaVidaJogador
   - CaixaVidaFamilia
   - PauseMenu
+  - maoCapanga
+  - Capanga
+  - NavegationPoints
   layers:
   - Default
   - TransparentFX
