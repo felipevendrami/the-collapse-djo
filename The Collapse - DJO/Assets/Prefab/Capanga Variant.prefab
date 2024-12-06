@@ -312,6 +312,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minDistanceToFollow: 1.7
   minDistanceToPoint: 1
+  minDistanceToAttack: 2
   timeToStartNavegation: 3
   speedOfNavegation: 1
   speedOfFollow: 3

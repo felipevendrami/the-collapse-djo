@@ -8,6 +8,7 @@ public class CapangaController : MonoBehaviour
     [Header("IA Follow Navigation")]
     public float minDistanceToFollow = 0.5f;
     public float minDistanceToPoint = 1.0f;
+    public float minDistanceToAttack = 2.0f;
     public float timeToStartNavegation = 3.0f;
     public float speedOfNavegation = 1.0f;
     public float speedOfFollow = 3.0f;
@@ -94,7 +95,9 @@ public class CapangaController : MonoBehaviour
     {
         navMesh.speed = speedOfFollow;
 
-        if (Vector3.Distance(transform.position, target.position) > minDistanceToFollow)
+        float distanceToTarget = Vector3.Distance(transform.position, target.position);
+
+        if (distanceToTarget > minDistanceToAttack) // Capanga está longe, continua se aproximando
         {
             anim.SetBool("StopPunch", true);
             anim.SetBool("Follow", true);
@@ -103,18 +106,27 @@ public class CapangaController : MonoBehaviour
 
             navMesh.enabled = true;
             navMesh.SetDestination(target.position);
-        } else
+        }
+        else if (distanceToTarget <= minDistanceToAttack && distanceToTarget > minDistanceToFollow) // Dentro da distância para iniciar o soco
         {
-            // Adicionar ataque aqui
-            // Ao chegar perto do player, o inimigo fica parado
-            var lookPos = new Vector3(target.position.x, 0, target.position.z);
-            transform.LookAt(lookPos);
-            
             navMesh.enabled = false;
 
             anim.SetBool("Follow", false);
             anim.SetBool("StopPunch", false);
             anim.SetTrigger("Punch");
+
+            // Capanga olha para o jogador ao atacar
+            Vector3 lookPos = new Vector3(target.position.x, transform.position.y, target.position.z);
+            transform.LookAt(lookPos);
+            CorrigirRigiEntrar();
+        }
+        else // Distância muito pequena
+        {
+            navMesh.enabled = false;
+
+            // Capanga evita bugs ficando muito perto
+            Vector3 awayFromTarget = transform.position - target.position;
+            transform.position += awayFromTarget.normalized * 0.1f;
         }
     }
 
@@ -139,11 +151,13 @@ public class CapangaController : MonoBehaviour
 
     public void Walk()
     {
+        CorrigirRigiSair();
         audioSrc.PlayOneShot(walkSound, 0.05f);
     }
 
     public void Run()
     {
+        CorrigirRigiSair();
         audioSrc.PlayOneShot(runSound, 0.05f);
     }
 
@@ -193,5 +207,15 @@ public class CapangaController : MonoBehaviour
         Gizmos.DrawRay(eyes.position, rightRayDirection * visionRadius);
         Gizmos.DrawLine(eyes.position, eyes.position + leftRayDirection * visionRadius);
         Gizmos.DrawLine(eyes.position, eyes.position + rightRayDirection * visionRadius);
+    }
+
+        private void CorrigirRigiEntrar()
+    {
+        GetComponent<Rigidbody>().isKinematic = true;
+    }
+
+    private void CorrigirRigiSair()
+    {
+        GetComponent<Rigidbody>().isKinematic = false;
     }
 }
