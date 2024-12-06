@@ -131,6 +131,7 @@ public class CapangaController : MonoBehaviour
     // Procura novo ponto para realizar a patrulha
     private int GetRandomPointIndex()
     {
+        /* // Define distancia maxima para definir nova position
 
         float patrolRadius = 10f; // Defina o raio máximo para patrulha
         List<int> validPoints = new List<int>();
@@ -172,7 +173,9 @@ public class CapangaController : MonoBehaviour
 
         return selectedPoint;
 
-        /*var i = UnityEngine.Random.Range(0, (navegationsPoints.Length - 1));
+        */
+
+        var i = UnityEngine.Random.Range(0, (navegationsPoints.Length - 1));
 
         if (pointIndex == i)
         {
@@ -189,7 +192,7 @@ public class CapangaController : MonoBehaviour
             }
         }
 
-        return i;*/
+        return i;
     }
 
     private IEnumerator StartNavegation()
