@@ -175,4 +175,7 @@ public class GameManager : MonoBehaviour
         pilhas = newPilhas;
     }
 
+    public void DiminuiVidaJogador(float dano){
+        sliderVidaJogador.value -= dano;
+    }
 }
