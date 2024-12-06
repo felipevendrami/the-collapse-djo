@@ -24,7 +24,7 @@ public class StartGame : MonoBehaviour
     }
     public void CarregarJogo()
     {
-        SceneManager.LoadScene(1); 
+        SceneManager.LoadScene(5); 
         SceneManager.sceneLoaded += OnSceneLoaded; 
     }
 
