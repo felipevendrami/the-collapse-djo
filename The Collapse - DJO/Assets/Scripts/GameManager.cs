@@ -146,6 +146,8 @@ public class GameManager : MonoBehaviour
                 {
                     Debug.LogError("ScoreDataManager não encontrado na cena!");
                 }
+
+                SceneManager.LoadScene(6);
             }
         }    
         
@@ -158,7 +160,7 @@ public class GameManager : MonoBehaviour
 
     private void GameOver()
     {
-        Time.TimeScale =0f;
+        Time.timeScale  =0f;
         textoJogoSalvo.text = "VOCÊ MORREU!";
         textoJogoSalvo.gameObject.SetActive(true);
         TocarSom(1); // Som de sucesso
