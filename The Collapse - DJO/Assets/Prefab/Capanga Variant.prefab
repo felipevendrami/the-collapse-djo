@@ -324,6 +324,7 @@ MonoBehaviour:
   runSound: {fileID: 8300000, guid: 8374ec7c4d48d1e4d8f7af497d109c1f, type: 3}
   walkSound: {fileID: 8300000, guid: fd2e0d4c2cf0f434a8b4810e53942190, type: 3}
   voicePunchSound: {fileID: 8300000, guid: 38c8d162816296845adfa645863d3e02, type: 3}
+  voiceHeySound: {fileID: 8300000, guid: 4ce3169350afa404eafe9fddcb52239a, type: 3}
 --- !u!82 &6242211281629362383
 AudioSource:
   m_ObjectHideFlags: 0

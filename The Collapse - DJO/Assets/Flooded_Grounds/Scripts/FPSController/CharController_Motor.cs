@@ -7,7 +7,7 @@ public class CharController_Motor : MonoBehaviour {
 
 	[Header("Player Configs")]
 	public float speed = 10.0f;
-	public float sensitivity = 70.0f;
+	public float sensitivity = 100.0f;
 	public float WaterHeight = 15.5f;
 	public CharacterController character;
 	public GameObject cam;
@@ -166,11 +166,4 @@ public class CharController_Motor : MonoBehaviour {
 		yield return new WaitForSeconds(4f);
 		sangueNaTela.SetActive(false);
 	}
-
-
-	/*public void LevarDano(int dano)
-	{
-		vida -= dano;
-		Debug.Log("Personagem levou dano. Vida = " + vida);
-	}*/
 }

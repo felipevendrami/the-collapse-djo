@@ -33,7 +33,7 @@ public class CapangaController : MonoBehaviour
     public AudioClip runSound;
     public AudioClip walkSound;
     public AudioClip voicePunchSound;
-
+    public AudioClip voiceHeySound;
 
 
     // Start is called before the first frame update
@@ -82,6 +82,7 @@ public class CapangaController : MonoBehaviour
                 if (hit.collider.CompareTag("Player"))
                 {
                     timerNav = timeOfNavegation;
+                    audioSrc.PlayOneShot(voiceHeySound);
                     return true;
                 }
             }
