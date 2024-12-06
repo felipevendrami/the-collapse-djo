@@ -7,6 +7,8 @@ TagManager:
   - Pegar
   - Arrastar
   - maoCapanga
+  - Capanga
+  - NavegationPoints
   layers:
   - Default
   - TransparentFX

@@ -5,85 +5,209 @@ using UnityEngine.AI;
 
 public class CapangaController : MonoBehaviour
 {
-    private NavMeshAgent agente;
-    private GameObject player;
-    private Animator anim;
-    public float distanciaDoAtaque = 0.5f;
-    private GameObject maoCapanga;
-    private FieldOfView fov;
+    [Header("IA Follow Navigation")]
+    public float minDistanceToFollow = 0.5f;
+    public float minDistanceToPoint = 1.0f;
+    public float timeToStartNavegation = 3.0f;
+    public float speedOfNavegation = 1.0f;
+    public float speedOfFollow = 3.0f;
 
+    [Header("IA Vision")]
+    public Transform eyes;
+    public float visionRadius = 10f;
+    public float visionAngle = 45f;
+    public float timeOfNavegation;
+    public GameObject[] navegationsPoints;
+
+    private float timerNav;
+    private int pointIndex;
+    private bool canSeePlayer = false;
+
+    private Animator anim;
+    private Transform target;
+    private NavMeshAgent navMesh;
+
+
+    // Start is called before the first frame update
     void Start()
     {
-        agente = GetComponent<NavMeshAgent>();
-        player = GameObject.FindWithTag("Player");
         anim = GetComponent<Animator>();
-        fov = GetComponent<FieldOfView>();
+        navMesh = GetComponent<NavMeshAgent>();
+        target = GameObject.FindGameObjectWithTag("Player").transform;
+        navegationsPoints = GameObject.FindGameObjectsWithTag("NavegationPoints");
+        pointIndex = GetRandomPointIndex();
 
-        maoCapanga = GameObject.FindWithTag("maoCapanga");
-        maoCapanga.SetActive(false);
+        navMesh.speed = 3.5f;
     }
 
+    // Update is called once per frame
     void Update()
     {
-        // Implementar o morrer caso necessario
+        timerNav = Mathf.Clamp(timerNav -= Time.deltaTime, 0, timeOfNavegation);
+        canSeePlayer = CanSeePlayer();
 
-        if (fov.podeVerPlayer)
+        if (canSeePlayer || timerNav > 0)
         {
-            PersegueJogador();
+            Follow();
         } else
         {
-            anim.SetBool("pararAtaque", true);
-            CorrigirRigiSair();
-            agente.isStopped = false;
+            Navegation();
         }
     }
 
-    private void PersegueJogador()
+    // Raio de visao para avistar o jogador
+    private bool CanSeePlayer()
     {
-        float distanciaDoPlayer = Vector3.Distance(transform.position, player.transform.position);
-
-        // Capanga pode atacar
-        if (distanciaDoPlayer < distanciaDoAtaque)
+        if (target == null)
         {
-            agente.isStopped = true;
-            maoCapanga.SetActive(true);
-            anim.SetTrigger("ataque");
-            anim.SetBool("podeAndar", false);
-            anim.SetBool("pararAtaque", false);
-            CorrigirRigiEntrar();
+            return false;
         }
 
-        // Player se afastou
-        if (distanciaDoPlayer >= distanciaDoAtaque + 1)
+        var directionToPlayer = (target.position - eyes.position).normalized;
+
+        if (Vector3.Angle(eyes.forward, directionToPlayer) < visionAngle / 2f)
         {
-            maoCapanga.SetActive(false);
-            anim.SetBool("pararAtaque", true);
-            CorrigirRigiSair();
+            RaycastHit hit;
+            if (Physics.Raycast(eyes.position, directionToPlayer, out hit, visionRadius))
+            {
+                if (hit.collider.CompareTag("Player"))
+                {
+                    timerNav = timeOfNavegation;
+                    return true;
+                }
+            }
         }
 
-        if (anim.GetBool("podeAndar"))
+        return false;
+    }
+
+    // Perseguir o jogador
+    private void Follow()
+    {
+        navMesh.speed = speedOfFollow;
+
+        if (Vector3.Distance(transform.position, target.position) > minDistanceToFollow)
         {
-            maoCapanga.SetActive(false);
-            agente.isStopped = false;
-            agente.SetDestination(player.transform.position);
-            anim.ResetTrigger("ataque");
+            anim.SetBool("StopPunch", true);
+            anim.SetBool("Follow", true);
+            anim.ResetTrigger("Punch");
+
+            navMesh.enabled = true;
+            navMesh.SetDestination(target.position);
+        } else
+        {
+            // Adicionar ataque aqui
+            // Ao chegar perto do player, o inimigo fica parado
+            var lookPos = new Vector3(target.position.x, 0, target.position.z);
+            transform.LookAt(lookPos);
+            
+            navMesh.enabled = false;
+
+            anim.SetBool("Follow", false);
+            anim.SetBool("StopPunch", false);
+            anim.SetTrigger("Punch");
         }
     }
 
-    private void CorrigirRigiEntrar()
+    // Navegacao para novo destino
+    private void Navegation()
     {
-        GetComponent<Rigidbody>().isKinematic = true;
+        anim.SetBool("Follow", false);
+        navMesh.speed = speedOfNavegation;
+
+        if (navMesh.enabled && Vector3.Distance(transform.position, navegationsPoints[pointIndex].transform.position) > minDistanceToPoint)
+        {
+            anim.SetBool("Navegation", true);
+            navMesh.SetDestination(navegationsPoints[pointIndex].transform.position);
+        } else
+        {
+            navMesh.enabled = false;
+            anim.SetBool("Navegation", false);
+            pointIndex = GetRandomPointIndex();
+            StartCoroutine("StartNavegation");
+        }
     }
 
-    private void CorrigirRigiSair()
+    // Procura novo ponto para realizar a patrulha
+    private int GetRandomPointIndex()
     {
-        GetComponent<Rigidbody>().isKinematic = false;
+
+        float patrolRadius = 10f; // Defina o raio máximo para patrulha
+        List<int> validPoints = new List<int>();
+
+        // Itera por todos os pontos e verifica se estão dentro do raio
+        for (int i = 0; i < navegationsPoints.Length; i++)
+        {
+            if (Vector3.Distance(transform.position, navegationsPoints[i].transform.position) <= patrolRadius)
+            {
+                validPoints.Add(i);
+            }
+        }
+
+        // Se não houver pontos válidos, retorna um ponto aleatório
+        if (validPoints.Count == 0)
+        {
+            return UnityEngine.Random.Range(0, navegationsPoints.Length);
+        }
+
+        // Escolhe aleatoriamente entre os pontos válidos
+        int randomIndex = UnityEngine.Random.Range(0, validPoints.Count);
+        int selectedPoint = validPoints[randomIndex];
+
+        // Verifica se o índice escolhido é o mesmo da última escolha
+        if (pointIndex == selectedPoint)
+        {
+            return GetRandomPointIndex(); // Recursão se o mesmo ponto for escolhido
+        }
+
+        // Garante que outros capangas não escolham o mesmo ponto
+        var enemys = GameObject.FindGameObjectsWithTag("Capanga");
+        foreach (GameObject enemy in enemys)
+        {
+            if (enemy.GetComponent<CapangaController>().pointIndex == selectedPoint)
+            {
+                return GetRandomPointIndex();
+            }
+        }
+
+        return selectedPoint;
+
+        /*var i = UnityEngine.Random.Range(0, (navegationsPoints.Length - 1));
+
+        if (pointIndex == i)
+        {
+            return GetRandomPointIndex();
+        }
+
+        var enemys = GameObject.FindGameObjectsWithTag("Capanga");
+
+        foreach (GameObject enemy in enemys)
+        {
+            if (enemy.GetComponent<CapangaController>().pointIndex == i)
+            {
+                return GetRandomPointIndex();
+            }
+        }
+
+        return i;*/
     }
 
-    private void OlharParaJogador()
+    private IEnumerator StartNavegation()
     {
-        Vector3 direcaoOlhar = player.transform.position - transform.position;
-        Quaternion rotacao = Quaternion.LookRotation(direcaoOlhar);
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, rotacao, Time.deltaTime * 300);
+        yield return new WaitForSeconds(timeToStartNavegation);
+        navMesh.enabled = true;
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = canSeePlayer ? Color.blue : Color.red;
+        Quaternion leftRayRotation = Quaternion.AngleAxis(-visionAngle / 2f, transform.up);
+        Quaternion rightRayRotation = Quaternion.AngleAxis(visionAngle / 2f, transform.up);
+        Vector3 leftRayDirection = leftRayRotation * transform.forward;
+        Vector3 rightRayDirection = rightRayRotation * transform.forward;
+        Gizmos.DrawRay(eyes.position, leftRayDirection * visionRadius);
+        Gizmos.DrawRay(eyes.position, rightRayDirection * visionRadius);
+        Gizmos.DrawLine(eyes.position, eyes.position + leftRayDirection * visionRadius);
+        Gizmos.DrawLine(eyes.position, eyes.position + rightRayDirection * visionRadius);
     }
 }

@@ -149,13 +149,13 @@ public class CharController_Motor : MonoBehaviour {
 	// Dano causado pelo capanga
 	void OnTriggerEnter(Collider collider)
 	{
-		if(collider.gameObject.tag=="maoCapanga")
+		/*if(collider.gameObject.tag=="maoCapanga")
 		{
 			vida -= 30;
 			sangueNaTela.SetActive(true);
 			StartCoroutine("SaidaTelaSangue");
 			Debug.Log("Personagem levou dano. Vida = " + vida);
-		}
+		}*/
 	}
 
 	IEnumerator SaidaTelaSangue()
