@@ -4,18 +4,20 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance; // Singleton
+    [Header("HUD")]
     public Text textoFase; // Texto para a fase
     public Text textoPilhas; // Texto para exibir a quantidade de pilhas
     public Slider sliderVidaJogador; // Slider de vida do jogador
     public Slider sliderVidaFamilia; // Slider de vida da família
-    private AudioSource audio;
-
     private int pilhas = 0; // Quantidade de pilhas
     private int faseAtual = 1; // Fase inicial
     private float reducaoVidaJogador = 0.5f; // Velocidade inicial de redução da vida do jogador
     private float reducaoVidaFamilia = 0.3f; // Velocidade inicial de redução da vida da família
-
+    [Header("Audio Configs")]
     public AudioClip[] clips;
+    private AudioSource audio;
+    [Header("Enemies")]
+    public GameObject[] enemies;
 
     private void Awake()
     {
@@ -175,4 +177,16 @@ public class GameManager : MonoBehaviour
         pilhas = newPilhas;
     }
 
+    public void TriggerDesafio2()
+    {
+        foreach(GameObject capanga in enemies)
+        {
+            capanga.SetActive(true);
+        }
+    }
+
+    public void TriggerDesafio3(){
+        faseAtual = 3;
+        AtualizarTextoFase();
+    }
 }

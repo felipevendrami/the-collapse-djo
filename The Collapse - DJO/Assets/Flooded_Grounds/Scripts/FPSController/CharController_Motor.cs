@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class CharController_Motor : MonoBehaviour {
 
+	[Header("Player Configs")]
 	public float speed = 10.0f;
 	public float sensitivity = 70.0f;
 	public float WaterHeight = 15.5f;
@@ -14,8 +15,9 @@ public class CharController_Motor : MonoBehaviour {
 	float rotX, rotY;
 	public bool webGLRightClickRotation = true;
 	public float gravity = 40.0f;
+	public int vida = 100;
 
-    // Movimento Pulo
+    [Header("Jump and Ground Configs")]
 	public float alturaPulo = 100f;
 	public Transform checaChao;
     public float raioEsfera = 0.4f;
@@ -29,10 +31,9 @@ public class CharController_Motor : MonoBehaviour {
     private bool estahAbaixado = false;
     private bool levantarBloqueado;
     public float alturaLevantado, alturaAbaixado, posicaoCameraEmPe, posicaoCameraAbaixado;
-
-	public int vida = 100;
+	
+	[Header("Others")]
 	public GameObject sangueNaTela;
-
 
 	void Start(){
 		//LockCursor ();
@@ -44,7 +45,6 @@ public class CharController_Motor : MonoBehaviour {
 			sensitivity = sensitivity * 1.5f;
 		}
 	}
-
 
 	void CheckForWaterHeight(){
 		if (transform.position.y < WaterHeight) {
@@ -151,13 +151,13 @@ public class CharController_Motor : MonoBehaviour {
 	// Dano causado pelo capanga
 	void OnTriggerEnter(Collider collider)
 	{
-		/*if(collider.gameObject.tag=="maoCapanga")
+		if(collider.gameObject.tag=="maoCapanga")
 		{
 			vida -= 30;
 			sangueNaTela.SetActive(true);
 			StartCoroutine("SaidaTelaSangue");
 			Debug.Log("Personagem levou dano. Vida = " + vida);
-		}*/
+		}
 	}
 
 	IEnumerator SaidaTelaSangue()
