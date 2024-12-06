@@ -126,7 +126,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            textoFase.text = "Parabéns! Você completou todas as fases.";
+            textoFase.text = "Parabéns! Você completou todos os desafios da Fase 1.";
         }
         
         PlayerDataManager.Instance.SaveGame();
@@ -194,6 +194,7 @@ public class GameManager : MonoBehaviour
 		yield return new WaitForSeconds(4f);
 		textoJogoSalvo.gameObject.SetActive(false);
 	}
+
     public void TriggerDesafio2()
     {
         foreach(GameObject capanga in enemies)
@@ -204,6 +205,12 @@ public class GameManager : MonoBehaviour
 
     public void TriggerDesafio3(){
         faseAtual = 3;
-        AtualizarTextoFase();
+        ProximaFase();
+    }
+
+    public void Desafio3Finalizado()
+    {
+        faseAtual = 4;
+        ProximaFase();
     }
 }
