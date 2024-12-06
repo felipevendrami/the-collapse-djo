@@ -227,6 +227,7 @@ public class GameManager : MonoBehaviour
 
     public void TriggerDesafio2()
     {
+        Debug.Log("Chegou");
         foreach(GameObject capanga in enemies)
         {
             capanga.SetActive(true);
@@ -234,13 +235,11 @@ public class GameManager : MonoBehaviour
     }
 
     public void TriggerDesafio3(){
-        //faseAtual = 3;
         ProximaFase();
     }
 
     public void Desafio3Finalizado()
     {
-        //faseAtual = 4;
         ProximaFase();
     }
 }

@@ -146,7 +146,7 @@ namespace NavKeypad
             keypadDisplayText.text = accessGrantedText;
             panelMesh.material.SetVector("_EmissionColor", screenGrantedColor * screenIntensity);
             audioSource.PlayOneShot(accessGrantedSfx);
-            //gameManager.Desafio3Finalizado();
+            gameManager.Desafio3Finalizado();
         }
     }
 }
