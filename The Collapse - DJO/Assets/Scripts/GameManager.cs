@@ -1,11 +1,16 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Collections;
+
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance; // Singleton
     public Text textoFase; // Texto para a fase
     public Text textoPilhas; // Texto para exibir a quantidade de pilhas
+
+    public Text textoJogoSalvo;
     public Slider sliderVidaJogador; // Slider de vida do jogador
     public Slider sliderVidaFamilia; // Slider de vida da família
     private AudioSource audio;
@@ -90,22 +95,22 @@ public class GameManager : MonoBehaviour
         switch (faseAtual)
         {
             case 1:
-                textoFase.text = "Fase 1: Encontrar pilhas para utilizar o rádio";
+                textoFase.text = "Desafio 1: Encontrar pilhas para utilizar o rádio";
                 reducaoVidaJogador = 0.5f;
                 reducaoVidaFamilia = 0.3f;
                 break;
             case 2:
-                textoFase.text = "Fase 2: Furtividade";
+                textoFase.text = "Desafio 2: Mesmo com pilhas, o rádio ainda não está funcionando. Passe pelos capangas para chegar até a antena de comunicação";
                 reducaoVidaJogador = 0.7f;
                 reducaoVidaFamilia = 0.4f;
                 break;
             case 3:
-                textoFase.text = "Fase 3: Reativar a Antena";
+                textoFase.text = "Desafio 3: Reative a antena de comunicação para utilizar o rádio.";
                 reducaoVidaJogador = 1.0f;
                 reducaoVidaFamilia = 0.5f;
                 break;
             default:
-                textoFase.text = "Fim do Jogo";
+                textoFase.text = "Fim da Fase 1";
                 break;
         }
     }
@@ -123,7 +128,10 @@ public class GameManager : MonoBehaviour
         }
         
         PlayerDataManager.Instance.SaveGame();
+
+        textoJogoSalvo.gameObject.SetActive(true);
         TocarSom(1);//sucesso
+		StartCoroutine(SaidaJogoSalvo());
     }
 
     private void GameOver()
@@ -175,4 +183,13 @@ public class GameManager : MonoBehaviour
         pilhas = newPilhas;
     }
 
+    public void DiminuiVidaJogador(float dano){
+        sliderVidaJogador.value -= dano;
+    }
+
+	IEnumerator SaidaJogoSalvo()
+	{
+		yield return new WaitForSeconds(4f);
+		textoJogoSalvo.gameObject.SetActive(false);
+	}
 }
