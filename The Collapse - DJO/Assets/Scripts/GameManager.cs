@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 
 public class GameManager : MonoBehaviour
@@ -149,18 +150,19 @@ public class GameManager : MonoBehaviour
         }    
         
         PlayerDataManager.Instance.SaveGame();
-
+        textoJogoSalvo.text = "JOGO SALVO!";
         textoJogoSalvo.gameObject.SetActive(true);
         TocarSom(1); // Som de sucesso
         StartCoroutine(SaidaJogoSalvo());
     }
 
-
-
     private void GameOver()
     {
-        textoFase.text = "Game Over! Tente novamente.";
-        Time.timeScale = 0; // Pausa o jogo
+        Time.TimeScale =0f;
+        textoJogoSalvo.text = "VOCÊ MORREU!";
+        textoJogoSalvo.gameObject.SetActive(true);
+        TocarSom(1); // Som de sucesso
+        StartCoroutine((Morreu()));
     }
 
     public void TocarSom(int som){
@@ -215,6 +217,13 @@ public class GameManager : MonoBehaviour
 		yield return new WaitForSeconds(4f);
 		textoJogoSalvo.gameObject.SetActive(false);
 	}
+
+	IEnumerator Morreu()
+	{
+		yield return new WaitForSeconds(4f);
+        Time.timeScale = 1f;
+		SceneManager.LoadScene(0);
+	}    
 
     public void TriggerDesafio2()
     {
