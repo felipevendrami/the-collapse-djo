@@ -1,11 +1,16 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Collections;
+
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance; // Singleton
     public Text textoFase; // Texto para a fase
     public Text textoPilhas; // Texto para exibir a quantidade de pilhas
+
+    public Text textoJogoSalvo;
     public Slider sliderVidaJogador; // Slider de vida do jogador
     public Slider sliderVidaFamilia; // Slider de vida da família
     private AudioSource audio;
@@ -123,7 +128,10 @@ public class GameManager : MonoBehaviour
         }
         
         PlayerDataManager.Instance.SaveGame();
+
+        textoJogoSalvo.gameObject.SetActive(true);
         TocarSom(1);//sucesso
+		StartCoroutine(SaidaJogoSalvo());
     }
 
     private void GameOver()
@@ -178,4 +186,10 @@ public class GameManager : MonoBehaviour
     public void DiminuiVidaJogador(float dano){
         sliderVidaJogador.value -= dano;
     }
+
+	IEnumerator SaidaJogoSalvo()
+	{
+		yield return new WaitForSeconds(4f);
+		textoJogoSalvo.gameObject.SetActive(false);
+	}
 }
