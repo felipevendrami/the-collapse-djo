@@ -27,6 +27,13 @@ public class CapangaController : MonoBehaviour
     private Transform target;
     private NavMeshAgent navMesh;
 
+    [Header("Sound Effects")]
+    private AudioSource audioSrc;
+    public AudioClip runSound;
+    public AudioClip walkSound;
+    public AudioClip voicePunchSound;
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -35,6 +42,7 @@ public class CapangaController : MonoBehaviour
         navMesh = GetComponent<NavMeshAgent>();
         target = GameObject.FindGameObjectWithTag("Player").transform;
         navegationsPoints = GameObject.FindGameObjectsWithTag("NavegationPoints");
+        audioSrc = GetComponent<AudioSource>();
         pointIndex = GetRandomPointIndex();
 
         navMesh.speed = 3.5f;
@@ -90,6 +98,7 @@ public class CapangaController : MonoBehaviour
         {
             anim.SetBool("StopPunch", true);
             anim.SetBool("Follow", true);
+            anim.SetBool("Navegation", false);
             anim.ResetTrigger("Punch");
 
             navMesh.enabled = true;
@@ -128,53 +137,25 @@ public class CapangaController : MonoBehaviour
         }
     }
 
+    public void Walk()
+    {
+        audioSrc.PlayOneShot(walkSound, 0.05f);
+    }
+
+    public void Run()
+    {
+        audioSrc.PlayOneShot(runSound, 0.05f);
+    }
+
+    public void Punch()
+    {
+        audioSrc.clip = voicePunchSound;
+        audioSrc.Play();
+    }
+
     // Procura novo ponto para realizar a patrulha
     private int GetRandomPointIndex()
     {
-        /* // Define distancia maxima para definir nova position
-
-        float patrolRadius = 10f; // Defina o raio máximo para patrulha
-        List<int> validPoints = new List<int>();
-
-        // Itera por todos os pontos e verifica se estão dentro do raio
-        for (int i = 0; i < navegationsPoints.Length; i++)
-        {
-            if (Vector3.Distance(transform.position, navegationsPoints[i].transform.position) <= patrolRadius)
-            {
-                validPoints.Add(i);
-            }
-        }
-
-        // Se não houver pontos válidos, retorna um ponto aleatório
-        if (validPoints.Count == 0)
-        {
-            return UnityEngine.Random.Range(0, navegationsPoints.Length);
-        }
-
-        // Escolhe aleatoriamente entre os pontos válidos
-        int randomIndex = UnityEngine.Random.Range(0, validPoints.Count);
-        int selectedPoint = validPoints[randomIndex];
-
-        // Verifica se o índice escolhido é o mesmo da última escolha
-        if (pointIndex == selectedPoint)
-        {
-            return GetRandomPointIndex(); // Recursão se o mesmo ponto for escolhido
-        }
-
-        // Garante que outros capangas não escolham o mesmo ponto
-        var enemys = GameObject.FindGameObjectsWithTag("Capanga");
-        foreach (GameObject enemy in enemys)
-        {
-            if (enemy.GetComponent<CapangaController>().pointIndex == selectedPoint)
-            {
-                return GetRandomPointIndex();
-            }
-        }
-
-        return selectedPoint;
-
-        */
-
         var i = UnityEngine.Random.Range(0, (navegationsPoints.Length - 1));
 
         if (pointIndex == i)
