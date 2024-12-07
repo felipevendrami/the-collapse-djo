@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     private AudioSource audio;
     [Header("Enemies")]
     public GameObject[] enemies;
+    private bool isGameOver = false;
 
     private void Awake()
     {
@@ -52,9 +53,10 @@ public class GameManager : MonoBehaviour
         sliderVidaFamilia.value -= reducaoVidaFamilia * Time.deltaTime;
 
         // Verifica se a vida chegou a zero
-        if (sliderVidaJogador.value <= 0 || sliderVidaFamilia.value <= 0)
+        if ((sliderVidaJogador.value <= 0 || sliderVidaFamilia.value <= 0) && !isGameOver)
         {
             GameOver();
+            isGameOver = true;
         }
     }
 
@@ -121,6 +123,7 @@ public class GameManager : MonoBehaviour
     public void ProximaFase()
     {
         faseAtual++;
+        Debug.Log("Fase atual:" + faseAtual);
         
         if (faseAtual <= 3)
         {
@@ -140,10 +143,12 @@ public class GameManager : MonoBehaviour
                 ScoreDataManager scoreManager = FindObjectOfType<ScoreDataManager>();
                 if (scoreManager != null)
                 {
+                    SceneManager.LoadScene(6);
                     scoreManager.SaveScore(healthPlayer, healthFamily);
                 }
                 else
                 {
+                    SceneManager.LoadScene(6);
                     Debug.LogError("ScoreDataManager não encontrado na cena!");
                 }
 
@@ -155,7 +160,7 @@ public class GameManager : MonoBehaviour
         textoJogoSalvo.text = "JOGO SALVO!";
         textoJogoSalvo.gameObject.SetActive(true);
         TocarSom(1); // Som de sucesso
-        StartCoroutine(SaidaJogoSalvo());
+        StartCoroutine("SaidaJogoSalvo");
     }
 
     private void GameOver()
@@ -164,7 +169,7 @@ public class GameManager : MonoBehaviour
         textoJogoSalvo.text = "VOCÊ MORREU!";
         textoJogoSalvo.gameObject.SetActive(true);
         TocarSom(1); // Som de sucesso
-        StartCoroutine((Morreu()));
+        StartCoroutine("Morreu");
     }
 
     public void TocarSom(int som){
@@ -216,15 +221,17 @@ public class GameManager : MonoBehaviour
 
 	IEnumerator SaidaJogoSalvo()
 	{
+        Debug.Log("Saída jogo salvo");
 		yield return new WaitForSeconds(4f);
 		textoJogoSalvo.gameObject.SetActive(false);
 	}
 
 	IEnumerator Morreu()
 	{
+        Debug.Log("morreu");
+        SceneManager.LoadScene(0);
 		yield return new WaitForSeconds(4f);
         Time.timeScale = 1f;
-		SceneManager.LoadScene(0);
 	}    
 
     public void TriggerDesafio2()
