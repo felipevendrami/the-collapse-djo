@@ -33,7 +33,7 @@ public class CapangaController : MonoBehaviour
     public AudioClip runSound;
     public AudioClip walkSound;
     public AudioClip voicePunchSound;
-
+    public AudioClip voiceHeySound;
 
 
     // Start is called before the first frame update
